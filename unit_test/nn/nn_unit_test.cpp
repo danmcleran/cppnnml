@@ -1583,33 +1583,6 @@ BOOST_AUTO_TEST_CASE(test_case_floatingpoint_elman_nn)
     testFloatingPointNeuralNetwork_Recurrent(nn, path);
 }
 
-BOOST_AUTO_TEST_CASE(test_case_fixedpoint_lstm_nn)
-{
-    static constexpr size_t NUMBER_OF_INPUTS = 2;
-    static constexpr size_t NUMBER_OF_HIDDEN_LAYERS = 1;
-    static constexpr size_t NUMBER_OF_NEURONS_PER_HIDDEN_LAYER = 3;
-    static constexpr size_t NUMBER_OF_OUTPUTS = 1;
-    static constexpr size_t NUMBER_OF_FIXED_BITS = 8;
-    static constexpr size_t NUMBER_OF_FRACTIONAL_BITS = 8;
-    typedef tinymind::QValue<NUMBER_OF_FIXED_BITS, NUMBER_OF_FRACTIONAL_BITS, true> ValueType;
-    typedef tinymind::FixedPointTransferFunctions<
-                                                    ValueType,
-                                                    UniformRealRandomNumberGenerator<ValueType>,
-                                                    tinymind::TanhActivationPolicy<ValueType>,
-                                                    tinymind::TanhActivationPolicy<ValueType>> TransferFunctionsType;
-    typedef tinymind::LstmNetwork < ValueType,
-                                    NUMBER_OF_INPUTS,
-                                    NUMBER_OF_HIDDEN_LAYERS,
-                                    NUMBER_OF_NEURONS_PER_HIDDEN_LAYER,
-                                    NUMBER_OF_OUTPUTS,
-                                    TransferFunctionsType> FixedPointLstmNetworkType;
-    srand(static_cast<unsigned int>(time(NULL)));
-    char const* const path = "nn_fixed_lstm.txt";
-    FixedPointLstmNetworkType nn;
-
-    testNeuralNetwork_Recurrent(nn, path);
-}
-
 BOOST_AUTO_TEST_CASE(test_case_floatingpoint_nn_xor)
 {
     static constexpr size_t NUMBER_OF_INPUTS = 2;
