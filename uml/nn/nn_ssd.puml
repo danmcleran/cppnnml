@@ -21,50 +21,25 @@
 *'/
 
 @startuml
-class InputLayerType {
-}
-
-class InnerHiddenLayerManager {
-}
-
-class LastHiddenLayerType {
-}
-
-class OutputLayerType {
-}
-
-class TrainingPolicyType {
-}
-
-class GradientsManagerType {
-}
-
-class TransferFunctionsPolicy {
-}
-
-class MultilayerPerceptron {
-+{static} size_t NeuralNetworkNumberOfHiddenLayers
-+{static} size_t NumberOfInnerHiddenLayers
-+{static} size_t NumberOfInputLayerNeurons
-+{static} size_t NumberOfHiddenLayerNeurons
-+{static} size_t NumberOfOutputLayerNeurons
-+{static} size_t NeuralNetworkRecurrentConnectionDepth
-+{static} size_t NeuralNetworkBatchSize
-#ValueType mError
-}
-
-class RecurrentMultilayerPerceptron {
-}
-
-MultilayerPerceptron *-- InputLayerType
-MultilayerPerceptron *-- InnerHiddenLayerManager
-MultilayerPerceptron *-- LastHiddenLayerType
-MultilayerPerceptron *-- OutputLayerType
-MultilayerPerceptron *-- RecurrentLayerType
-MultilayerPerceptron *-- TrainingPolicyType
-MultilayerPerceptron *-- GradientsManagerType
-MultilayerPerceptron - TransferFunctionsPolicy
-RecurrentMultilayerPerceptron -|> MultilayerPerceptron
-ElmanNetwork -|> RecurrentMultilayerPerceptron
-
+title Simple Feed Forward Neural Network
+Application -> NeuralNet : feedForward
+NeuralNet -> InputLayerType : feedForward
+NeuralNet -> HiddenLayerFeedForwardManagerType : feedForward
+note over InnerHiddenLayerManager : InnerHiddenLayers are all hidden layers before\nthe last one, which feeds the OutputLayer
+loop 1 to Number Of Inner Hidden Layers
+HiddenLayerFeedForwardManagerType -> InnerHiddenLayerType : feedForward
+end
+note over InnerHiddenLayerManager : InnerHiddenLayers may not exists\nbut the last one always does
+HiddenLayerFeedForwardManagerType -> LastHiddenLayerType : feedForward
+NeuralNet -> OutputLayerType : feedForward
+Application -> NeuralNet : error = calculateError
+loop Number Of Output Neurons
+NeuralNet -> OutputLayer : getLearnedValue
+end
+NeuralNet -> TransferFunctionsPolicy : error = calculateError(learned values)
+Application -> TransferFunctionsPolicy : train = !isWithinZeroTolerance(error)
+alt train
+Application -> NeuralNet : trainNetwork
+end
+Application -> NeuralNet : learnedValues = getLearnedValues
 @enduml
